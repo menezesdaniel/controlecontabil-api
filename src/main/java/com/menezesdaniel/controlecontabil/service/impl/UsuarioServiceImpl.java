@@ -62,6 +62,13 @@ public class UsuarioServiceImpl implements UsuarioService{
 			throw new RegraNegocioException("Já existe um usuário cadastrado com este email.");
 		}
 	}
+	
+	//objeto Usuario do tipo Optional pois, retorna o id, caso existe, ou retorna vazio, caso contrario
+	@Override
+	public Optional<Usuario> obterPorId(Long id) {
+		return repository.findById(id);
+	}
+	
 
 
 }

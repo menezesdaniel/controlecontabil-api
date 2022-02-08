@@ -18,7 +18,6 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-
 public class Usuario {
 	@Id
 	@Column(name = "id")

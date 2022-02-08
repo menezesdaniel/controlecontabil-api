@@ -3,6 +3,7 @@ package com.menezesdaniel.controlecontabil.service.impl;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.menezesdaniel.controlecontabil.exception.RegraNegocioException;
 import com.menezesdaniel.controlecontabil.model.entity.Lancamento;
 import com.menezesdaniel.controlecontabil.model.enums.StatusLancamento;
+import com.menezesdaniel.controlecontabil.model.enums.TipoLancamento;
 import com.menezesdaniel.controlecontabil.model.repository.LancamentoRepository;
 import com.menezesdaniel.controlecontabil.service.LancamentoService;
 
@@ -97,7 +99,7 @@ public class LancamentoServiceImpl implements LancamentoService {
 			throw new RegraNegocioException("Informe um Ano válido!");
 		}
 		
-		if(lancamento.getUsuario() == null || lancamento.getId() == null) {
+		if(lancamento.getUsuario() == null || lancamento.getUsuario().getId() == null) {
 			throw new RegraNegocioException("Informe um Usuário!");
 		}
 		
@@ -109,7 +111,31 @@ public class LancamentoServiceImpl implements LancamentoService {
 			throw new RegraNegocioException("Informe de Tipo de lançamento!");
 		}
 	}
-	
-	
 
+	@Override
+	public Optional<Lancamento> obterPorId(Long id) {
+		//busca um id no BD
+		return repository.findById(id);
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public BigDecimal obterSaldoPorUsuario(Long id) {
+		//obtem os saldos dos usuario informado por 2 tipos principais de lancamentos através
+			//de uma query para o BD
+		BigDecimal receitas = repository.obterSaldoPorTipoLancamentoEUsuario(id, TipoLancamento.RECEITA);
+		BigDecimal despesas = repository.obterSaldoPorTipoLancamentoEUsuario(id, TipoLancamento.DESPESA);
+		
+		// caso tenha retorno null, sera atribuido o valor zero ao tipo de lancamento
+		if (receitas == null) {
+			receitas = BigDecimal.ZERO;			
+		}		
+		if (despesas == null) {
+			despesas = BigDecimal.ZERO;			
+		}
+		
+		//faz o calculo da operacao subtraindo as receitas das despesas
+		return receitas.subtract(despesas);
+	}
+	
 }

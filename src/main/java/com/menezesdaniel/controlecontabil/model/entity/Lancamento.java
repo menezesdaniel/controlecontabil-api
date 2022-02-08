@@ -20,19 +20,22 @@ import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 import com.menezesdaniel.controlecontabil.model.enums.StatusLancamento;
 import com.menezesdaniel.controlecontabil.model.enums.TipoLancamento;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table (name="lancamento", schema="contabilidade")
-@Builder
 @Data
-
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Lancamento {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name="id")
-	private Long Id;
+	private Long id;
 
 	@Column(name="descricao")
 	private String descricao;

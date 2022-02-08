@@ -1,6 +1,8 @@
 package com.menezesdaniel.controlecontabil.service;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 import com.menezesdaniel.controlecontabil.model.entity.Lancamento;
 import com.menezesdaniel.controlecontabil.model.enums.StatusLancamento;
@@ -24,4 +26,10 @@ public interface LancamentoService {
 
 	//valida o lancamento novo a ser inserido ou atualizado
 	void validar (Lancamento lancamento);
+	
+	//busca um id no BD
+	Optional<Lancamento> obterPorId(Long id);
+	
+	//calcula o saldo do id informado
+	BigDecimal obterSaldoPorUsuario(Long id);
 }
