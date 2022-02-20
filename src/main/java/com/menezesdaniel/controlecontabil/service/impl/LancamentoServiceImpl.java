@@ -1,6 +1,7 @@
 package com.menezesdaniel.controlecontabil.service.impl;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -34,6 +35,7 @@ public class LancamentoServiceImpl implements LancamentoService {
 	public Lancamento salvar(Lancamento lancamento) {
 		validar(lancamento);
 		lancamento.setStatus(StatusLancamento.PENDENTE);
+		lancamento.setDataCadastro(LocalDate.now());
 		return repository.save(lancamento);
 	}
 
@@ -41,8 +43,8 @@ public class LancamentoServiceImpl implements LancamentoService {
 	@Transactional
 	public Lancamento atualizar(Lancamento lancamento) {
 		
-		//verifica se realmente existe um lancamento com id indicado
-		Objects.nonNull(lancamento.getId());
+		//verifica se o lancamento possui id, existindo no BD
+		Objects.requireNonNull(lancamento.getId());
 		validar(lancamento);
 		
 		//salva o lancamento com as alteracoes
@@ -53,8 +55,8 @@ public class LancamentoServiceImpl implements LancamentoService {
 	@Transactional
 	public void deletar(Lancamento lancamento) {
 		
-		//verifica se realmente existe um lancamento com id indicado
-		Objects.nonNull(lancamento.getId());
+		//verifica se o lancamento possui id, existindo no BD
+		Objects.requireNonNull(lancamento.getId());
 		
 		//deleta o lancamento
 		repository.delete(lancamento);		

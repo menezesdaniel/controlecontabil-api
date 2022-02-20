@@ -30,47 +30,47 @@ public class UsuarioRepositoryTest {
 
 	@Test
 	public void deveVerificarAExistenciaDeUmEmail() {
-		//scene
+		//PREPARATION
 		Usuario usuario = criarUsuario();
 		entityManager.persist(usuario);
 
-		//action
+		//ACTION
 		boolean result = repository.existsByEmail("usuario@email.com");
 
-		//check
+		//ASSERTION
 		Assertions.assertThat(result).isTrue();		
 	}
 
 	@Test
 	public void deveRetornarFalsoQuandoNaoHouverUsuarioCadastradoComOEmail() {
-		//scene
+		//PREPARATION
 
-		//action
+		//ACTION
 		boolean result = repository.existsByEmail("usuario@email.com");
 
-		//check
+		//ASSERTION
 		Assertions.assertThat(result).isFalse();		
 	}
 
 	@Test
 	public void devePersistirUmUsuarioNaBaseDeDados() {
-		//scene
+		//PREPARATION
 		Usuario usuario = criarUsuario();
 
-		//action
+		//ACTION
 		Usuario usuarioSalvo = repository.save(usuario);
 		
-		//check
+		//ASSERTION
 		Assertions.assertThat(usuarioSalvo.getId()).isNotNull();
 	}
 	
 	@Test
 	public void deveBuscarUmUsuarioPorEmail() {
-		//scene
+		//PREPARATION
 		Usuario usuario = criarUsuario();
 		entityManager.persist(usuario);
 		
-		//check
+		//ASSERTION
 		Optional<Usuario> result = repository.findByEmail("usuario@email.com");
 		
 		Assertions.assertThat(result.isPresent()).isTrue();
@@ -79,7 +79,7 @@ public class UsuarioRepositoryTest {
 	
 	@Test
 	public void deveRetornarVazioAoBuscarUsuarioPorEmailQuandoNaoExisteNaBase() {		
-		//check
+		//ASSERTION
 		Optional<Usuario> result = repository.findByEmail("usuario@email.com");
 		
 		Assertions.assertThat(result.isPresent()).isFalse();
