@@ -7,11 +7,15 @@ import com.menezesdaniel.controlecontabil.model.entity.Usuario;
 import com.menezesdaniel.controlecontabil.model.enums.StatusLancamento;
 import com.menezesdaniel.controlecontabil.model.enums.TipoLancamento;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data //mapeamento lombok
 @Builder //mapeamento lombok
+@NoArgsConstructor //construtor default vazio da classe
+@AllArgsConstructor //construtor default da classe com todos os argumentos (a ser utilizado pelo Builder)
 public class LancamentoDto {
 	
 	private Long id;

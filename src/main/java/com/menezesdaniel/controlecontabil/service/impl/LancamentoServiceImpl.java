@@ -125,8 +125,8 @@ public class LancamentoServiceImpl implements LancamentoService {
 	public BigDecimal obterSaldoPorUsuario(Long id) {
 		//obtem os saldos dos usuario informado por 2 tipos principais de lancamentos através
 			//de uma query para o BD
-		BigDecimal receitas = repository.obterSaldoPorTipoLancamentoEUsuario(id, TipoLancamento.RECEITA);
-		BigDecimal despesas = repository.obterSaldoPorTipoLancamentoEUsuario(id, TipoLancamento.DESPESA);
+		BigDecimal receitas = repository.obterSaldoPorTipoLancamentoEUsuarioEStatus(id, TipoLancamento.RECEITA, StatusLancamento.EFETIVADO);
+		BigDecimal despesas = repository.obterSaldoPorTipoLancamentoEUsuarioEStatus(id, TipoLancamento.DESPESA, StatusLancamento.EFETIVADO);
 		
 		// caso tenha retorno null, sera atribuido o valor zero ao tipo de lancamento
 		if (receitas == null) {

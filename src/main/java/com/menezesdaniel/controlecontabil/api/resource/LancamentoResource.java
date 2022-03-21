@@ -65,7 +65,13 @@ public class LancamentoResource {
 		return ResponseEntity.ok(lancamentos);
 
 	}
-
+	
+	@GetMapping("{id}")
+	public ResponseEntity obterLancamento ( @PathVariable("id") Long id ) {
+		return service.obterPorId(id)
+				.map( lancamento -> new ResponseEntity( converter (lancamento), HttpStatus.OK) )
+				.orElseGet( () -> new ResponseEntity(HttpStatus.NOT_FOUND) );		
+	}
 
 	//url para salvar, sera na propria raiz da API
 	@PostMapping
@@ -129,9 +135,22 @@ public class LancamentoResource {
 			return new ResponseEntity( HttpStatus.NO_CONTENT );
 		}).orElseGet( () -> new ResponseEntity("Lançamento não encontrado na base de dados.", HttpStatus.BAD_REQUEST));
 	}	
+		
+	//converte os atributos do lancamento recebido do BD para o tipo DTO
+	private LancamentoDto converter (Lancamento lancamento) {
+		return LancamentoDto.builder()
+				.id(lancamento.getId())
+				.descricao(lancamento.getDescricao())
+				.valor(lancamento.getValor())
+				.mes(lancamento.getMes())
+				.ano(lancamento.getAno())
+				.status(lancamento.getStatus().name())
+				.tipo(lancamento.getTipo().name())
+				.usuario(lancamento.getUsuario().getId())
+				.build();
+	}
 
-
-	//converte todo os atributos do lancamento recebido no DTO para a classe lancamento
+	//converte todos os atributos do lancamento recebido no DTO para a classe lancamento
 	private Lancamento converter (LancamentoDto dto) {
 		Lancamento lancamento = new Lancamento();
 		lancamento.setId(dto.getId());
@@ -156,9 +175,6 @@ public class LancamentoResource {
 
 		return lancamento;
 	}
-
-
-
 
 
 }
