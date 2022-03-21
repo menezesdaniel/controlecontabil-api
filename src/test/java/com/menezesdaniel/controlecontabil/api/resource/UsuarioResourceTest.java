@@ -26,11 +26,12 @@ import com.menezesdaniel.controlecontabil.service.UsuarioService;
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
 @WebMvcTest( controllers = UsuarioResource.class)
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc //injeta o MockMvc no contexto da aplicacao.
 public class UsuarioResourceTest {
 
 	static final String API = "/api/usuarios";
 	static final MediaType JSON = MediaType.APPLICATION_JSON;
+	// criacao das constantes as quais serao utilizadas
 
 	@Autowired
 	MockMvc mvc;
@@ -60,11 +61,16 @@ public class UsuarioResourceTest {
 													.contentType(JSON)
 													.content(json);
 		
+		//o .post("/autenticar") farah a chamada para o endpoint
+		//o .contentType esta setado para JSON
+		//o .content recebe o objeto DTO criado anteriormente, jah convertido para string
+		
 		mvc.perform(request)
 			.andExpect( MockMvcResultMatchers.status().isOk() )
 			.andExpect( MockMvcResultMatchers.jsonPath("id").value(usuario.getId()) )
 			.andExpect( MockMvcResultMatchers.jsonPath("nome").value(usuario.getNome()) )
-			.andExpect( MockMvcResultMatchers.jsonPath("email").value(usuario.getEmail()) );		
+			.andExpect( MockMvcResultMatchers.jsonPath("email").value(usuario.getEmail()) );
+		//o mockMvc inicia o perform com todo o request anterior e as demais verificacoes necessarias
 	}
 	
 	@Test
