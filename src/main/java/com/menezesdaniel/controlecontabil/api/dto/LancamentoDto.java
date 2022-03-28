@@ -26,5 +26,5 @@ public class LancamentoDto {
 	private Long usuario; //sera recebido o ID do usuario
 	private String tipo; //sera recebida uma String com o tipo
 	private String status; //nao sera recebido o status, porem vai 
-	// ser retornado na pesquisa no corpo da resposta
+		// ser retornado na pesquisa no corpo da resposta
 }

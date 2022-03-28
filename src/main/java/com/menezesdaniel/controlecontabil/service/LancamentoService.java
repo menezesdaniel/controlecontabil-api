@@ -9,27 +9,27 @@ import com.menezesdaniel.controlecontabil.model.enums.StatusLancamento;
 
 public interface LancamentoService {
 	
-	//salva o lancamento novo
 	Lancamento salvar (Lancamento lancamento);
+		//salva o lancamento novo
 	
-	//atualiza um lancamento ja existente
 	Lancamento atualizar (Lancamento lancamento);
+		//atualiza um lancamento ja existente
 	
-	//deleta um lancamento
 	void deletar (Lancamento lancamento);
+		//deleta um lancamento
 	
-	//busca um lancamento com o determinado filtro
 	List<Lancamento> buscar (Lancamento lancamentoFiltro);
+		//busca um lancamento com o determinado filtro
 	
-	//atualiza o status de um lancamento, recebe o lancamento e o status novo como parametro
 	void atualizarStatus (Lancamento lancamento, StatusLancamento status);
+		//atualiza o status de um lancamento, recebe o lancamento e o status novo como parametro
 
-	//valida o lancamento novo a ser inserido ou atualizado
 	void validar (Lancamento lancamento);
+		//valida o lancamento novo a ser inserido ou atualizado
 	
-	//busca um id no BD
 	Optional<Lancamento> obterPorId(Long id);
+		//busca um id no BD
 	
-	//calcula o saldo do id informado
 	BigDecimal obterSaldoPorUsuario(Long id);
+		//calcula o saldo do id informado
 }

@@ -19,7 +19,6 @@ import com.menezesdaniel.controlecontabil.exception.RegraNegocioException;
 import com.menezesdaniel.controlecontabil.model.entity.Lancamento;
 import com.menezesdaniel.controlecontabil.model.entity.Usuario;
 import com.menezesdaniel.controlecontabil.model.enums.StatusLancamento;
-import com.menezesdaniel.controlecontabil.model.enums.TipoLancamento;
 import com.menezesdaniel.controlecontabil.model.repository.LancamentoRepository;
 import com.menezesdaniel.controlecontabil.model.repository.LancamentoRepositoryTest;
 import com.menezesdaniel.controlecontabil.service.impl.LancamentoServiceImpl;

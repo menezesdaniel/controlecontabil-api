@@ -22,10 +22,11 @@ import com.menezesdaniel.controlecontabil.service.LancamentoService;
 @Service
 public class LancamentoServiceImpl implements LancamentoService {
 	
+		//declaracao para o construtor da classe
 	private LancamentoRepository repository;
 	
-	// nao necessita autowired, pois ja eh um bean gerenciado
-	// construtor da classe
+		// nao necessita autowired, pois ja eh um bean gerenciado
+		// construtor da classe
 	public LancamentoServiceImpl(LancamentoRepository repository) {
 		this.repository = repository;
 	}
@@ -43,35 +44,35 @@ public class LancamentoServiceImpl implements LancamentoService {
 	@Transactional
 	public Lancamento atualizar(Lancamento lancamento) {
 		
-		//verifica se o lancamento possui id, existindo no BD
 		Objects.requireNonNull(lancamento.getId());
+			//verifica se o lancamento possui id, existindo no BD
 		validar(lancamento);
 		
-		//salva o lancamento com as alteracoes
 		return repository.save(lancamento);
+			//salva o lancamento com as alteracoes
 	}
 
 	@Override
 	@Transactional
 	public void deletar(Lancamento lancamento) {
 		
-		//verifica se o lancamento possui id, existindo no BD
 		Objects.requireNonNull(lancamento.getId());
+			//verifica se o lancamento possui id, existindo no BD
 		
-		//deleta o lancamento
 		repository.delete(lancamento);		
+			//deleta o lancamento
 	}
 
 	@Override
 	@Transactional(readOnly = true)
 	public List<Lancamento> buscar(Lancamento lancamentoFiltro) {
 		
-		// pega um instacia do objeto Lancamento preenchido como exemplo e
-		// faz a consulta baseado nas propriedades que foram informadas
-		Example example = Example.of( lancamentoFiltro, 
-				ExampleMatcher.matching()
-				.withIgnoreCase()
-				.withStringMatcher(StringMatcher.CONTAINING) );
+		// pega um instacia do objeto Lancamento preenchido como exemplo e faz a consulta baseado nas propriedades que foram informadas
+		Example example = Example.of( 
+							lancamentoFiltro, 
+							ExampleMatcher.matching()
+								.withIgnoreCase()
+								.withStringMatcher(StringMatcher.CONTAINING) );
 		
 		return repository.findAll(example);
 	}
@@ -79,16 +80,16 @@ public class LancamentoServiceImpl implements LancamentoService {
 	@Override
 	public void atualizarStatus(Lancamento lancamento, StatusLancamento status) {
 		
-		//seta o lancamento com o novo status
 		lancamento.setStatus(status);
+			//seta o lancamento com o novo status
 		
-		//atualiza o lancamento para garantir que a operacao foi realizada
 		atualizar(lancamento);		
+			//atualiza o lancamento para garantir que a operacao foi realizada
 	}
 
 	@Override
 	public void validar(Lancamento lancamento) {
-		// TODO Auto-generated method stub
+
 		if(lancamento.getDescricao() == null || lancamento.getDescricao().trim().equals("")) {
 			throw new RegraNegocioException("Informe uma Descrição válida!");
 		}
@@ -116,19 +117,18 @@ public class LancamentoServiceImpl implements LancamentoService {
 
 	@Override
 	public Optional<Lancamento> obterPorId(Long id) {
-		//busca um id no BD
 		return repository.findById(id);
+			//busca um id no BD
 	}
 
 	@Override
 	@Transactional(readOnly = true)
 	public BigDecimal obterSaldoPorUsuario(Long id) {
-		//obtem os saldos dos usuario informado por 2 tipos principais de lancamentos através
-			//de uma query para o BD
+			//obtem os saldos dos usuario informado por 2 tipos principais de lancamentos através de uma query para o BD
 		BigDecimal receitas = repository.obterSaldoPorTipoLancamentoEUsuarioEStatus(id, TipoLancamento.RECEITA, StatusLancamento.EFETIVADO);
 		BigDecimal despesas = repository.obterSaldoPorTipoLancamentoEUsuarioEStatus(id, TipoLancamento.DESPESA, StatusLancamento.EFETIVADO);
 		
-		// caso tenha retorno null, sera atribuido o valor zero ao tipo de lancamento
+			// caso tenha retorno null, sera atribuido o valor zero ao tipo de lancamento
 		if (receitas == null) {
 			receitas = BigDecimal.ZERO;			
 		}		
@@ -136,8 +136,7 @@ public class LancamentoServiceImpl implements LancamentoService {
 			despesas = BigDecimal.ZERO;			
 		}
 		
-		//faz o calculo da operacao subtraindo as receitas das despesas
 		return receitas.subtract(despesas);
-	}
-	
+			//faz o calculo da operacao subtraindo as receitas das despesas
+	}	
 }

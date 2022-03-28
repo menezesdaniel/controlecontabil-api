@@ -29,11 +29,13 @@ import com.menezesdaniel.controlecontabil.service.UsuarioService;
 @RequestMapping("/api/lancamentos")
 public class LancamentoResource {
 
+		//declaracao para o construtor da classe
 	private LancamentoService service;
 	private UsuarioService usuarioService;
 
-	//construtor da classe
-	public LancamentoResource(LancamentoService service, UsuarioService usuarioService) {
+		//construtor da classe
+	public LancamentoResource(LancamentoService service, 
+								UsuarioService usuarioService) {
 		this.service = service;
 		this.usuarioService = usuarioService;
 	}
@@ -45,9 +47,7 @@ public class LancamentoResource {
 			@RequestParam(value="mes", required = false) Integer mes,
 			@RequestParam(value="ano", required = false) Integer ano,
 			@RequestParam("usuario") Long idUsuario
-
-			//os parametros foram colocados individualmente para que todos sejam opcionais,
-			// exceto o parametro usuario
+				//os parametros foram colocados individualmente para que todos sejam opcionais, exceto o parametro usuario
 			) {
 		Lancamento lancamentoFiltro = new Lancamento();
 		lancamentoFiltro.setDescricao(descricao);
@@ -73,7 +73,7 @@ public class LancamentoResource {
 				.orElseGet( () -> new ResponseEntity(HttpStatus.NOT_FOUND) );		
 	}
 
-	//url para salvar, sera na propria raiz da API
+		//url para salvar, sera na propria raiz da API
 	@PostMapping
 	public ResponseEntity salvar( @RequestBody LancamentoDto dto) {
 		try {
@@ -88,56 +88,61 @@ public class LancamentoResource {
 
 	@PutMapping("{id}") //o put recebera o nr de id na url, o qual sera atualizado
 	public ResponseEntity atualizar (@PathVariable("id") Long id, @RequestBody LancamentoDto dto ) {
-		//a url tera final /id, conforme descrito no PutMapping
-		//a variavel id, recebido pelo put sera a entrada, conforme descrito no PathVariable
+			//a url tera final /id, conforme descrito no PutMapping
+				//a variavel id, recebido pelo put sera a entrada, conforme descrito no PathVariable
+		
 		return service.obterPorId(id).map(entity ->{
-			//busca o id recebido no BD
+				//busca o id recebido no BD
 			try {
 				Lancamento lancamento = converter(dto);
 				lancamento.setId(entity.getId());
 				service.atualizar(lancamento);
-				//salva o lancamento no BD
+					//salva o lancamento no BD
 				return ResponseEntity.ok(lancamento);
 			} catch (RegraNegocioException e) {
 				return ResponseEntity.badRequest().body(e.getMessage());
 			}
 		}).orElseGet( () -> new ResponseEntity("Lançamento não encontrado na base de dados.", HttpStatus.BAD_REQUEST));
-	}	//orElseGet caso a funcao map nao encontre um lancamento com o id informado
+	}		//orElseGet caso a funcao map nao encontre um lancamento com o id informado
 
 
 	@PutMapping("{id}/atualiza-status") //o put recebera o nr de id na url o qual sera atualizado,
-	//seguido de atualiza-status, de modo a diferenciar da funcao atualizar lancamento
+		//seguido de atualiza-status, de modo a diferenciar da funcao atualizar lancamento
 	public ResponseEntity atualizarStatus (@PathVariable("id") Long id, @RequestBody AtualizaStatusDto dto ) {
+		
 		return service.obterPorId(id).map(entity ->{
-			//verifica o status recebido via DTO
+				//verifica o status recebido via DTO
 			StatusLancamento statusSelecionado = StatusLancamento.valueOf(dto.getStatus());
+			
 			if(statusSelecionado == null) {
 				return ResponseEntity.badRequest().body("Não foi possível atualizar o status do lançamento, envie um status válido!");
-				//erro caso o status recebido não esteja dentre aqueles enumerados
+					//erro caso o status recebido não esteja dentre aqueles enumerados
 			}
 			try {
 				entity.setStatus(statusSelecionado);
-				//atualiza com o novo status recebido
+					//atualiza com o novo status recebido
 				service.atualizar(entity);
-				//salva o lancamento no BD
+					//salva o lancamento no BD
 				return ResponseEntity.ok(entity);
 			} catch (RegraNegocioException e) {
 				return ResponseEntity.badRequest().body(e.getMessage());
 			}
 		}).orElseGet( () -> new ResponseEntity("Lançamento não encontrado na base de dados.", HttpStatus.BAD_REQUEST));
-	}	//orElseGet caso a funcao map nao encontre um lancamento com o id informado
+	}		//orElseGet caso a funcao map nao encontre um lancamento com o id informado
 
 
 	@DeleteMapping("{id}")
 	public ResponseEntity deletar (@PathVariable("id") Long id) {
+		
 		return service.obterPorId(id).map(entidade ->{
 			service.deletar(entidade);
 			return new ResponseEntity( HttpStatus.NO_CONTENT );
 		}).orElseGet( () -> new ResponseEntity("Lançamento não encontrado na base de dados.", HttpStatus.BAD_REQUEST));
 	}	
 		
-	//converte os atributos do lancamento recebido do BD para o tipo DTO
+		//converte os atributos do lancamento recebido do BD para o tipo DTO
 	private LancamentoDto converter (Lancamento lancamento) {
+		
 		return LancamentoDto.builder()
 				.id(lancamento.getId())
 				.descricao(lancamento.getDescricao())
@@ -150,7 +155,7 @@ public class LancamentoResource {
 				.build();
 	}
 
-	//converte todos os atributos do lancamento recebido no DTO para a classe lancamento
+		//converte todos os atributos do lancamento recebido no DTO para a classe lancamento
 	private Lancamento converter (LancamentoDto dto) {
 		Lancamento lancamento = new Lancamento();
 		lancamento.setId(dto.getId());

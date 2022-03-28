@@ -13,7 +13,7 @@ import lombok.Setter;
 @AllArgsConstructor //construtor default da classe com todos os argumentos (a ser utilizado pelo Builder)
 public class UsuarioDto {
 
-	//classe usuario Data Transfer Object, a qual armazena e envia para o banco de dados
+		//classe usuario Data Transfer Object, a qual armazena e envia para o banco de dados
 	private String email;
 	private String nome;
 	private String senha;

@@ -12,9 +12,9 @@ public class WebConfiguration implements WebMvcConfigurer {
 	@Override
 	public void addCorsMappings( CorsRegistry registry ) {
 		//CORS ou Cross-Origin Resource Sharing 
-		//o presente metodo habilita o recebimento de requisicoes de determinada origem
+			//o presente metodo habilita o recebimento de requisicoes de determinada origem
+		
 		registry.addMapping("/**").allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS");
-		//com a configuracao acima o api fica aberto para...
-			//requisicoes de todas as origens e com os metodos listados
+			//com a configuracao acima o api fica aberto para requisicoes de todas as origens e com os metodos listados
 	}
 }

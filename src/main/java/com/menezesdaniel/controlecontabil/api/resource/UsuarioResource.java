@@ -12,41 +12,59 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.menezesdaniel.controlecontabil.api.dto.TokenDto;
 import com.menezesdaniel.controlecontabil.api.dto.UsuarioDto;
 import com.menezesdaniel.controlecontabil.exception.ErroAutenticacao;
 import com.menezesdaniel.controlecontabil.exception.RegraNegocioException;
 import com.menezesdaniel.controlecontabil.model.entity.Usuario;
+import com.menezesdaniel.controlecontabil.service.JwtService;
 import com.menezesdaniel.controlecontabil.service.LancamentoService;
 import com.menezesdaniel.controlecontabil.service.UsuarioService;
+
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/usuarios")
 public class UsuarioResource {
 
+		//declaracao para o construtor da classe
 	private UsuarioService service;
 	private LancamentoService lancamentoService;
+	private JwtService jwtService;
 
-	//construtor da classe
-	public UsuarioResource(UsuarioService service, LancamentoService lancamentoService) {
+		//construtor da classe
+	public UsuarioResource(UsuarioService service,
+							LancamentoService lancamentoService,
+							JwtService jwtService) {
 		this.service = service;
 		this.lancamentoService = lancamentoService;
+		this.jwtService = jwtService;
 	}
 
-	//url para autenticar, seguido do padrao do RequestMapping
+		//url para autenticar, seguido do padrao do RequestMapping
 	@PostMapping("/autenticar")
-	public ResponseEntity autenticar( @RequestBody UsuarioDto dto ) {
-		try {
-			//compara usuario e a senha recebidos com o armazenado no BD  
-			Usuario usuarioAutenticado = service.autenticar(dto.getEmail(), dto.getSenha());
-			//retorna o usuario autenticado
-			return ResponseEntity.ok(usuarioAutenticado);
+	public ResponseEntity<?> autenticar( @RequestBody UsuarioDto dto ) {
+			// <?> -> pode retornar mais de um objeto em seu retorno
+		
+		try {			
+			Usuario authenticatedUser = service.autenticar( dto.getEmail(), dto.getSenha() );
+				//compara usuario e a senha recebidos com o armazenado no BD
+						
+			String token = jwtService.gerarToken( authenticatedUser );
+			
+			TokenDto tokenDto = new TokenDto( authenticatedUser.getNome(), token);
+				// armazena o nome e email do usuario, os quais foram armazenados no token
+			
+			return ResponseEntity.ok(tokenDto);
+				//retorna o usuario autenticado
+			
 		} catch (ErroAutenticacao e) {
-			//mostra o erro que impossibilitou a autenticacao do usuario
+				//mostra o erro que impossibilitou a autenticacao do usuario
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 	}
 
-	//url para salvar, sera na propria raiz da API
+		//url para salvar, sera na propria raiz da API
 	@PostMapping
 	public ResponseEntity salvar( @RequestBody UsuarioDto dto ) {
 
@@ -56,21 +74,24 @@ public class UsuarioResource {
 				.senha(dto.getSenha()).build();
 
 		try{
-			//compara usuario e a senha recebidos com o armazenado no BD
+				//compara usuario e a senha recebidos com o armazenado no BD
 			Usuario usuarioSalvo = service.salvarUsuario(usuario);
-			//retorna o usuario cadastrado e a mensagem de sucesso
+			
+				//retorna o usuario cadastrado e a mensagem de sucesso
 			return new ResponseEntity(usuarioSalvo, HttpStatus.CREATED);
+			
 		} catch(RegraNegocioException e) {
-			//mostra o erro que impossibilitou o cadastro do usuario
+			
+				//mostra o erro que impossibilitou o cadastro do usuario
 			return ResponseEntity.badRequest().body(e.getMessage()); 
 		}
 
 	}
 
 	@GetMapping("{id}/saldo") //o put recebera o nr de id na url o qual sera atualizado,
-	//seguido de saldo, de modo a diferencia-lo das demais funcoes
+		//seguido de saldo, de modo a diferencia-lo das demais funcoes
 	public ResponseEntity obterSaldo(@PathVariable("id") Long id) {
-		//PathVariable traz para o ambiente o valor da variavel do metodo get
+			//PathVariable traz para o ambiente o valor da variavel do metodo get
 
 		Optional<Usuario> usuario = service.obterPorId(id);
 		
@@ -81,6 +102,4 @@ public class UsuarioResource {
 		BigDecimal saldo = lancamentoService.obterSaldoPorUsuario(id);
 		return ResponseEntity.ok(saldo);
 	}
-
-
 }
